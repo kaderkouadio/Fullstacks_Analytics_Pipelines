@@ -7,6 +7,10 @@ __pycache__/
 *.pyd
 *$py.class
 
+# .gitignore
+Data/raw/
+
+
 # Environnements virtuels
 .env
 .venv
@@ -33,7 +37,6 @@ pip-delete-this-directory.txt
 ####################################
 #         FICHIERS PARQUET         #
 ####################################
-*.parquet
 Data/**/*.parquet  # si tes fichiers sont dans un dossier "Data/"
 
 ####################################
