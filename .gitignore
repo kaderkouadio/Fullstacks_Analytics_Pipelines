@@ -9,6 +9,8 @@ __pycache__/
 
 # .gitignore
 Data/raw/
+*.log
+
 
 
 # Environnements virtuels
