@@ -1,3 +1,4 @@
+
 services:
   airflow-webserver:
     image: apache/airflow:2.9.1
@@ -14,18 +15,7 @@ services:
       - ./Data:/opt/airflow/Data
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
-    command: >
-      bash -c "
-        airflow db init &&
-        airflow users create \
-          --username admin \
-          --firstname Admin \
-          --lastname Admin \
-          --role Admin \
-          --email admin@example.com \
-          --password admin &&
-        airflow webserver
-      "
+    command: webserver
 
   airflow-scheduler:
     image: apache/airflow:2.9.1
@@ -42,4 +32,4 @@ services:
       - ./Data:/opt/airflow/Data
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
-    command: airflow scheduler
+    command: scheduler
