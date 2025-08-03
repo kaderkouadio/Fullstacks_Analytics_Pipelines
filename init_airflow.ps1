@@ -9,69 +9,66 @@ Ce script PowerShell :
 3. Attend leur démarrage
 4. Crée un utilisateur admin pour accéder à l'interface Airflow
 
-.AUTEUR
-Kader Kouadio
+<#
+Initialise Airflow avec Docker et crée un utilisateur admin.
+Auteur : Kader Kouadio
 #>
 
 # ------------------- CONFIGURATION -------------------
 
-# Dossier du projet (chemin courant)
+# Chemin du projet
 $projectPath = Get-Location
-
-# Nom du fichier Docker Compose attendu
 $dockerComposeFile = "$projectPath\docker-compose.yml"
 
-# Informations utilisateur admin
-$adminUser = "admin"
-$adminPass = "admin"
+# Infos admin
+$adminUser = "Kouadio"
+$adminPass = "Kouadio"
 $adminEmail = "kkaderkouadio@gmail.com"
 $adminFirstname = "Kader"
 $adminLastname = "Kouadio"
 
-# ------------------- ÉTAPE 0 : Vérification de Docker -------------------
+# ------------------- ÉTAPE 0 : Vérification Docker -------------------
 
 if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
-    Write-Host "❌ Docker n'est pas installé ou n'est pas accessible depuis PowerShell." -ForegroundColor Red
+    Write-Host "❌ Docker non trouvé." -ForegroundColor Red
     exit 1
 }
 
-# ------------------- ÉTAPE 1 : Vérification du fichier docker-compose -------------------
+# ------------------- ÉTAPE 1 : Vérification docker-compose.yml -------------------
 
-if (-Not (Test-Path $dockerComposeFile)) {
-    Write-Host "❌ Fichier docker-compose.yml introuvable dans le dossier courant !" -ForegroundColor Red
+if (-not (Test-Path $dockerComposeFile)) {
+    Write-Host "❌ docker-compose.yml introuvable !" -ForegroundColor Red
     exit 1
 }
 
-# ------------------- ÉTAPE 2 : Lancement des services Airflow -------------------
+# ------------------- ÉTAPE 2 : Démarrage Docker Compose -------------------
 
-Write-Host "`n[1/4] 🚀 Lancement de Docker Compose..." -ForegroundColor Cyan
+Write-Host "`n[1/4] 🚀 Lancement d'Airflow..." -ForegroundColor Cyan
 docker-compose up -d
 
-# ------------------- ÉTAPE 3 : Pause pour laisser le temps aux conteneurs de démarrer -------------------
+# ------------------- ÉTAPE 3 : Attente -------------------
 
-Write-Host "`n[2/4] ⏳ Attente du démarrage des containers (10 secondes)..." -ForegroundColor Yellow
+Write-Host "`n[2/4] ⏳ Attente du démarrage des conteneurs..." -ForegroundColor Yellow
 Start-Sleep -Seconds 10
 
-# ------------------- ÉTAPE 4 : Création de l'utilisateur admin -------------------
+# ------------------- ÉTAPE 4 : Création utilisateur -------------------
 
-Write-Host "`n[3/4] 👤 Création de l'utilisateur admin..." -ForegroundColor Cyan
+Write-Host "`n[3/4] 👤 Création de l'admin Airflow..." -ForegroundColor Cyan
 
 docker-compose run --rm airflow-webserver airflow users create `
-  --username $adminUser `
-  --firstname $adminFirstname `
-  --lastname $adminLastname `
-  --role Admin `
-  --email $adminEmail `
-  --password $adminPass
+    --username $adminUser `
+    --firstname $adminFirstname `
+    --lastname $adminLastname `
+    --role Admin `
+    --email $adminEmail `
+    --password $adminPass
 
-Write-Host "`n[4/4] ✅ Utilisateur créé (ou déjà existant)." -ForegroundColor Green
+Write-Host "`n[4/4] ✅ Utilisateur créé avec succès (ou existant déjà)." -ForegroundColor Green
 
-# ------------------- INFOS SUPPLÉMENTAIRES -------------------
+# ------------------- INFOS -------------------
 
-Write-Host "`n🎉 Airflow est prêt ! Accédez à l'interface web sur : http://localhost:8080" -ForegroundColor Green
+Write-Host "`n🎉 Airflow est prêt : http://localhost:8080" -ForegroundColor Green
 
 Write-Host "`n🧾 Identifiants de connexion :" -ForegroundColor Cyan
 Write-Host "   ➤ Utilisateur : $adminUser"
 Write-Host "   ➤ Mot de passe : $adminPass"
-
-Write-Host "`n📋 Pour consulter les logs en temps réel : docker-compose logs -f" -ForegroundColor DarkGray
